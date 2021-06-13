@@ -3,8 +3,9 @@ package handler
 import (
 	"bytes"
 	"net/http"
-	"next-im/pkg/log"
 	"time"
+
+	"next-im/pkg/log"
 
 	"github.com/gorilla/websocket"
 )
