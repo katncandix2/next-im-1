@@ -1,8 +1,9 @@
 package log
 
 import (
-	"github.com/sirupsen/logrus"
 	"os"
+
+	"github.com/sirupsen/logrus"
 )
 
 var logger *logrus.Logger
@@ -22,10 +23,8 @@ func init() {
 		logger.Info("Failed to log to file, using default stderr")
 		os.Exit(-1)
 	}
-	return
 }
 
 func GetLogger() *logrus.Logger {
 	return logger
-
 }
