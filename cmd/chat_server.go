@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
-	"next-im/pkg/chat/handler"
-	"next-im/pkg/oauth"
 
+	"next-im/pkg/chat/handler"
 	"next-im/pkg/log"
+	"next-im/pkg/oauth"
 )
 
 var addr = flag.String("addr", ":8080", "http service address")
@@ -26,10 +26,10 @@ func main() {
 
 	//gitbub 回调地址
 	http.HandleFunc("/oauth/redirect", func(w http.ResponseWriter, r *http.Request) {
-		code:= r.URL.Query().Get("code")
+		code := r.URL.Query().Get("code")
 		meta := oauth.GetUserMeta(code)
 		fmt.Println(meta)
-		str:="success"
+		str := "success"
 		w.Write([]byte(str))
 	})
 
