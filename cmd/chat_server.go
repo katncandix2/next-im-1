@@ -4,16 +4,12 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+
+	"next-im/pkg/chat/constant"
 	"next-im/pkg/chat/db"
 	"next-im/pkg/chat/handler"
-<<<<<<< HEAD
-	"next-im/pkg/chat/constant"
 	log "next-im/pkg/log"
-=======
 	"next-im/pkg/oauth"
-
-	"next-im/pkg/log"
->>>>>>> 30bd01c92d0eaad68593c2e5e48c06e88d5ee3da
 )
 
 var addr = flag.String("addr", ":8080", "http service address")
@@ -52,10 +48,10 @@ func (server *Server) run() {
 
 	//gitbub 回调地址
 	http.HandleFunc("/oauth/redirect", func(w http.ResponseWriter, r *http.Request) {
-		code:= r.URL.Query().Get("code")
+		code := r.URL.Query().Get("code")
 		meta := oauth.GetUserMeta(code)
 		fmt.Println(meta)
-		str:="success"
+		str := "success"
 		w.Write([]byte(str))
 	})
 
@@ -63,7 +59,6 @@ func (server *Server) run() {
 	if err == nil {
 		log.GetLogger().Info("Listen Server: ", addr)
 	}
-<<<<<<< HEAD
 }
 
 func main() {
@@ -71,6 +66,4 @@ func main() {
 		dbEngine: constant.DB_ENGINE_MEM,
 	}
 	server.run()
-=======
->>>>>>> 30bd01c92d0eaad68593c2e5e48c06e88d5ee3da
 }
