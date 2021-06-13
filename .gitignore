@@ -127,3 +127,5 @@ tags
 # bak
 *.bak
 go.sum
+
+*.log

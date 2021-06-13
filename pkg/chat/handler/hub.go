@@ -1,5 +1,7 @@
 package handler
 
+import "next-im/pkg/log"
+
 // Hub maintains the set of active clients and broadcasts messages to the
 // clients.
 type Hub struct {
@@ -26,6 +28,7 @@ func NewHub() *Hub {
 }
 
 func (h *Hub) Run() {
+	log.GetLogger().Info("Handler hub backend start")
 	for {
 		select {
 		case client := <-h.register:

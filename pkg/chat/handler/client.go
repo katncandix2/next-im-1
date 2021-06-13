@@ -2,8 +2,8 @@ package handler
 
 import (
 	"bytes"
-	"log"
 	"net/http"
+	"next-im/pkg/log"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -29,8 +29,9 @@ var (
 )
 
 var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
+	ReadBufferSize:    1024,
+	WriteBufferSize:   1024,
+	EnableCompression: true,
 }
 
 // Client is a middleman between the websocket connection and the hub.
@@ -61,11 +62,12 @@ func (c *Client) readPump() {
 		_, message, err := c.conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Printf("error: %v", err)
+				log.GetLogger().Error("error: ", err)
 			}
 			break
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
+		log.GetLogger().Info("Client recive websocket message from client ", string(message))
 		c.hub.broadcast <- message
 	}
 }
@@ -117,10 +119,10 @@ func (c *Client) writePump() {
 }
 
 // serveWs handles websocket requests from the peer.
-func ServeWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
+func ServeWsHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Println(err)
+		log.GetLogger().Error("Server Ws failed ", err)
 		return
 	}
 	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
