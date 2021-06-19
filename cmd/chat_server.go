@@ -8,7 +8,7 @@ import (
 	"next-im/pkg/chat/constant"
 	"next-im/pkg/chat/db"
 	"next-im/pkg/chat/handler"
-	log "next-im/pkg/log"
+	"next-im/pkg/log"
 	"next-im/pkg/oauth"
 )
 
@@ -41,7 +41,7 @@ func (server *Server) run() {
 	// init db connection
 
 	http.HandleFunc("/", handler.ServeHomeHandler)
-	http.HandleFunc("/", handler.AddFriendHandler)
+	http.HandleFunc("/add_friend", handler.AddFriendHandler)
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		handler.ServeWsHandler(hub, w, r)
 	})
