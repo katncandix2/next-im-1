@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"next-im/pkg/chat/dao"
@@ -23,6 +24,8 @@ func ServeHomeHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
+
+	fmt.Println(r.Header.Get("Authorization"))
 	http.ServeFile(w, r, "pkg/chat/front/home.html")
 }
 
