@@ -2,14 +2,16 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"net/http"
+	"time"
 
 	"next-im/pkg/chat/constant"
 	"next-im/pkg/chat/db"
 	"next-im/pkg/chat/handler"
 	"next-im/pkg/log"
 	"next-im/pkg/oauth"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 var addr = flag.String("addr", ":8080", "http service address")
@@ -46,13 +48,28 @@ func (server *Server) run() {
 		handler.ServeWsHandler(hub, w, r)
 	})
 
+	http.HandleFunc("/auth", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "pkg/chat/front/auth.html")
+	})
+
 	//gitbub 回调地址
 	http.HandleFunc("/oauth/redirect", func(w http.ResponseWriter, r *http.Request) {
 		code := r.URL.Query().Get("code")
 		meta := oauth.GetUserMeta(code)
-		fmt.Println(meta)
-		str := "success"
-		w.Write([]byte(str))
+		claims := jwt.MapClaims{
+			"user":meta,
+			"exp": time.Now().Add(time.Duration(60 * 60 * 24)*time.Second).Unix(), // 过期时间，必须设置,
+		}
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+		tokenString, err := token.SignedString([]byte(oauth.SecretDevKey))
+		if err!=nil{
+			log.GetLogger().Errorln(err)
+		}
+
+		//todo Authorization 全局有效
+		w.Header().Set("Authorization",tokenString)
+		w.Write([]byte("success"))
 	})
 
 	err := http.ListenAndServe(*addr, nil)
